@@ -1067,7 +1067,6 @@
           <li class="nav-item"><a class="nav-link" href="#concept">Concept</a></li>
           <li class="nav-item"><a class="nav-link" href="#flow">Flow</a></li>
           <li class="nav-item"><a class="nav-link" href="#design">Design</a></li>
-          <li class="nav-item"><a class="nav-link" href="#eval">Eval</a></li>
           <li class="nav-item ms-lg-3 my-2 my-lg-0">
             <a class="btn btn-primary btn-sm rounded-pill px-4 shadow-2 text-white text-decoration-none"
               href="nova-discover-prototype.html" style="display:inline-flex;align-items:center;gap:6px;">
@@ -1090,7 +1089,6 @@
     <a class="toc-item" href="#trust">06 Trust</a>
     <a class="toc-item" href="#rationale">07 Rationale</a>
     <a class="toc-item" href="#tradeoffs">08 Tradeoffs</a>
-    <a class="toc-item" href="#eval">09 Eval Score</a>
   </nav>
 
   <!-- ══════════════ COVER ══════════════ -->
@@ -1810,94 +1808,7 @@
     </div>
   </section>
 
-  <!-- ══════════════ 09 EVAL SCORECARD ══════════════ -->
-  <section id="eval">
-    <div class="section-inner">
-      <div class="section-tag">09 &mdash; Self-Evaluation</div>
-      <h2>How this submission maps to the brief</h2>
-      <p class="lead">An honest review against Insait's stated evaluation criteria.</p>
 
-      <div class="scorecard">
-        <div class="score-row">
-          <div class="score-criterion">
-            <div class="score-name">Conversational UX</div>
-            <div class="score-weight">30% weight</div>
-          </div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track">
-              <div class="score-bar-fill" style="width:88%"></div>
-            </div>
-          </div>
-          <div class="score-pct">88%</div>
-          <div class="score-note">8-step flow, ≤2 fields per turn, SSN context, clarification handling, error state,
-            refusal path. Missing: voice mode, multilingual.</div>
-        </div>
-        <div class="score-row">
-          <div class="score-criterion">
-            <div class="score-name">Visual Design Craft</div>
-            <div class="score-weight">25% weight</div>
-          </div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track">
-              <div class="score-bar-fill" style="width:85%"></div>
-            </div>
-          </div>
-          <div class="score-pct">85%</div>
-          <div class="score-note">Polished landing, animated chat, real-time profile panel, CSS card mockup, confetti
-            result. Could be stronger with motion design spec.</div>
-        </div>
-        <div class="score-row">
-          <div class="score-criterion">
-            <div class="score-name">Problem Understanding</div>
-            <div class="score-weight">20% weight</div>
-          </div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track">
-              <div class="score-bar-fill" style="width:90%"></div>
-            </div>
-          </div>
-          <div class="score-pct">90%</div>
-          <div class="score-note">Live page audit, 6 specific pain points identified, emotional arc mapped, before/after
-            teardown in prototype. Strong evidence of genuine analysis.</div>
-        </div>
-        <div class="score-row">
-          <div class="score-criterion">
-            <div class="score-name">Strategic Rationale</div>
-            <div class="score-weight">15% weight</div>
-          </div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track">
-              <div class="score-bar-fill" style="width:87%"></div>
-            </div>
-          </div>
-          <div class="score-pct">87%</div>
-          <div class="score-note">Conversion logic, sunk cost principle, data quality argument, brand differentiation
-            angle, honest tradeoffs. Quantitative benchmarks are approximate.</div>
-        </div>
-        <div class="score-row">
-          <div class="score-criterion">
-            <div class="score-name">Presentation Quality</div>
-            <div class="score-weight">10% weight</div>
-          </div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track">
-              <div class="score-bar-fill" style="width:90%"></div>
-            </div>
-          </div>
-          <div class="score-pct">90%</div>
-          <div class="score-note">Two-deliverable approach (live prototype + case study) demonstrates format judgment.
-            TOC, logical flow, clear section structure.</div>
-        </div>
-      </div>
-
-      <div class="callout green" style="margin-top:32px">
-        <p><strong>Summary:</strong> This submission delivers a fully functional, live AI prototype paired with a
-          structured case study that covers problem analysis, UX rationale, strategic thinking, edge cases, and
-          trust/compliance considerations. The interactive prototype is powered by real Claude AI — Nova responds
-          dynamically to whatever the user types.</p>
-      </div>
-    </div>
-  </section>
 
   <!-- FOOTER -->
   <div class="footer">
@@ -1906,20 +1817,7 @@
   </div>
 
   <script>
-    // Animate score bars on scroll
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('.score-bar-fill').forEach(bar => {
-            const w = bar.style.width;
-            bar.style.width = '0%';
-            setTimeout(() => bar.style.width = w, 100);
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-    const scorecard = document.querySelector('.scorecard');
-    if (scorecard) observer.observe(scorecard);
+
 
     // TOC active state
     const sections = document.querySelectorAll('section[id]');
