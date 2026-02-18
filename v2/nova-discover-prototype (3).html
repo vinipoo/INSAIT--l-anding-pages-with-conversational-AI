@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discover Card Pre-Approval · Nova AI</title>
+
+  <!-- Material Icons Round -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+  <!-- Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <!-- MDB UI Kit 7 (stable CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.min.css"/>
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       BRAND TOKENS
+    ═══════════════════════════════════════════════ */
+    :root {
+      --brand:        #FF6200;
+      --brand-dark:   #CC4E00;
+      --brand-light:  #FFF1EB;
+      --brand-mid:    #FFD5B8;
+      --navy:         #1a1a2e;
+      --navy-soft:    #2d2d44;
+    }
+
+
+    /* ── Material Icons baseline fix ── */
+    .material-icons-round {
+      font-size: 20px;          /* sensible default */
+      vertical-align: middle;
+      line-height: 1;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    /* Size helpers matching Bootstrap/FA conventions */
+    .material-icons-round.icon-sm  { font-size: 16px; }
+    .material-icons-round.icon-xs  { font-size: 14px; }
+    .material-icons-round.icon-lg  { font-size: 24px; }
+    .material-icons-round.icon-xl  { font-size: 32px; }
+    /* When used inside buttons — tighten up */
+    .btn .material-icons-round { font-size: 18px; vertical-align: -4px; }
+    /* Navbar toggler icon */
+    .navbar-toggler .material-icons-round { font-size: 22px; color: #555; }
+    /* Chat avatar initial inside spans */
+    .chat-av .material-icons-round, .preview-av .material-icons-round { font-size: 16px; }
+
+    /* ═══════════════════════════════════════════════
+       MDB PRIMARY COLOUR OVERRIDE → Discover Orange
+    ═══════════════════════════════════════════════ */
+    .btn-primary                          { background-color: var(--brand) !important; border-color: var(--brand) !important; }
+    .btn-primary:hover, .btn-primary:focus{ background-color: var(--brand-dark) !important; border-color: var(--brand-dark) !important; }
+    .btn-primary:disabled                 { background-color: var(--brand) !important; opacity: .6; }
+    .btn-outline-primary                  { color: var(--brand) !important; border-color: var(--brand) !important; }
+    .btn-outline-primary:hover            { background-color: var(--brand) !important; color: #fff !important; }
+    .text-primary                         { color: var(--brand) !important; }
+    .bg-primary                           { background-color: var(--brand) !important; }
+    .border-primary                       { border-color: var(--brand) !important; }
+    .progress-bar                         { background-color: var(--brand) !important; }
+    .badge.bg-primary                     { background-color: var(--brand) !important; }
+    .form-control:focus, .form-outline .form-control:focus ~ .form-notch div { border-color: var(--brand) !important; }
+    .form-outline .form-control.active ~ .form-label,
+    .form-outline .form-control:focus ~ .form-label { color: var(--brand) !important; }
+    .ripple-surface-primary               { background-color: var(--brand) !important; }
+
+    /* ═══════════════════════════════════════════════
+       GLOBAL
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Roboto', sans-serif; background: #f0f2f5; color: var(--navy); }
+
+    /* ── SCREENS ── */
+    .screen         { display: none !important; }
+    .screen.active  { display: block !important; }
+    #landing.active,
+    #chat-experience.active,
+    #result-screen.active { display: flex !important; flex-direction: column; min-height: 100vh; }
+
+    /* ═══════════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════════ */
+    .mdb-navbar {
+      background: #fff !important;
+      box-shadow: 0 2px 15px rgba(0,0,0,.08) !important;
+      padding: 0;
+      min-height: 60px;
+      position: sticky; top: 0; z-index: 1030;
+    }
+    .mdb-navbar .navbar-brand {
+      font-size: 22px; font-weight: 900;
+      color: var(--brand); letter-spacing: -.5px;
+      text-decoration: none; padding: 14px 0;
+    }
+    .mdb-navbar .navbar-brand span { color: var(--navy); }
+    .mdb-navbar .nav-link {
+      font-size: 14px; font-weight: 500;
+      color: #555 !important; padding: 20px 14px !important;
+      transition: color .2s;
+    }
+    .mdb-navbar .nav-link:hover { color: var(--brand) !important; }
+
+    /* ═══════════════════════════════════════════════
+       LANDING — HERO  (MDB dark-gradient style)
+    ═══════════════════════════════════════════════ */
+    .hero-gradient {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #1a1a2e 100%);
+      padding: 80px 0 70px;
+      position: relative; overflow: hidden;
+    }
+    .hero-gradient::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(255,98,0,.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,98,0,.15);
+      border: 1px solid rgba(255,98,0,.3);
+      color: var(--brand-mid);
+      font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 50px; margin-bottom: 22px;
+    }
+    .hero-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 900; line-height: 1.1;
+      color: #fff; letter-spacing: -1px; margin-bottom: 20px;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(90deg, var(--brand), #ff9a4d);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-body-text {
+      font-size: 17px; font-weight: 300; color: rgba(255,255,255,.75);
+      line-height: 1.75; margin-bottom: 36px; max-width: 500px;
+    }
+    .hero-chips {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.85);
+      font-size: 13px; font-weight: 400;
+      padding: 7px 16px; border-radius: 50px;
+      backdrop-filter: blur(4px);
+    }
+    .hero-old-link {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,.45); font-size: 12px; font-weight: 400;
+      text-decoration: underline; margin-top: 18px; display: inline-block;
+      font-family: 'Roboto', sans-serif;
+      transition: color .2s;
+    }
+    .hero-old-link:hover { color: rgba(255,255,255,.75); }
+
+    /* ── Chat preview card in hero ── */
+    .preview-card {
+      border-radius: 20px !important;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4) !important;
+    }
+    .preview-topbar {
+      background: #f8f9fa;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .preview-av {
+      width: 34px; height: 34px;
+      background: var(--brand); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .preview-name   { font-weight: 600; font-size: 14px; color: var(--navy); }
+    .preview-status { font-size: 11px; color: #198754; display: flex; align-items: center; gap: 4px; }
+    .preview-msgs   { padding: 14px 16px; background: #fff; display: flex; flex-direction: column; gap: 9px; }
+    .pb {
+      font-size: 13px; line-height: 1.5; padding: 9px 13px;
+      max-width: 84%; border-radius: 16px;
+      animation: fadeUp .5s ease forwards; opacity: 0;
+    }
+    .pb.nova { background: var(--brand-light); color: var(--navy); border-bottom-left-radius: 4px; align-self: flex-start; }
+    .pb.user { background: var(--navy); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+    .pb:nth-child(1){animation-delay:.3s} .pb:nth-child(2){animation-delay:.9s}
+    .pb:nth-child(3){animation-delay:1.5s} .pb:nth-child(4){animation-delay:2.1s}
+
+    /* ── Credit card ── */
+    .card-mockup {
+      width: 330px;
+      height: 210px;
+      background: linear-gradient(135deg, #c0392b 0%, #e05c00 45%, #f39c12 100%);
+      border-radius: 18px; padding: 20px 24px; color: #fff;
+      position: relative; overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.18),
+        0 8px 24px rgba(0,0,0,.45),
+        0 28px 60px rgba(0,0,0,.45),
+        0 0 50px rgba(255,98,0,.2);
+      font-family: 'Roboto', monospace;
+      flex-shrink: 0;
+    }
+    /* Bubble overlays like reference image */
+    .card-mockup::before {
+      content:''; position:absolute; top:-40px; right:-40px;
+      width:180px; height:180px; border-radius:50%;
+      background:rgba(255,255,255,.1);
+    }
+    .card-mockup::after {
+      content:''; position:absolute; bottom:-60px; right:40px;
+      width:150px; height:150px; border-radius:50%;
+      background:rgba(255,255,255,.07);
+    }
+    .cm-inner { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:space-between; }
+    .cm-top { display:flex; align-items:center; justify-content:space-between; }
+    .cm-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; opacity: .85; text-transform: lowercase; }
+    .cm-chip-row { display:flex; align-items:center; gap:10px; margin-top: 10px; }
+    /* EMV Chip SVG */
+    .cm-chip {
+      width: 36px; height: 28px; border-radius: 5px;
+      background: linear-gradient(135deg, #d4a843 0%, #f5d06a 40%, #c8953a 100%);
+      border: 1px solid rgba(255,255,255,.3);
+      position: relative; flex-shrink:0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 2px; padding: 4px;
+    }
+    .cm-chip span {
+      display:block; background: rgba(0,0,0,.15); border-radius:1px;
+    }
+    .cm-chip span:nth-child(2) { background: rgba(0,0,0,.08); }
+    /* Contactless icon */
+    .cm-nfc {
+      font-size: 22px; opacity: .8; letter-spacing: -3px; line-height: 1;
+      font-style: normal;
+    }
+    .cm-number { font-size: 15px; font-weight: 500; letter-spacing: 3px; margin-top: 12px; opacity: .95; }
+    .cm-bottom { display:flex; align-items:flex-end; justify-content:space-between; }
+    .cm-holder-block {}
+    .cm-valid-label { font-size: 8px; opacity:.65; letter-spacing:.5px; text-transform:uppercase; margin-bottom:2px; }
+    .cm-valid-date { font-size: 13px; font-weight: 500; letter-spacing:1px; opacity:.9; }
+    .cm-name  { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; opacity: .9; font-weight: 500; margin-top:4px; }
+    .cm-cb    { text-align: right; }
+    .cm-cb-pct { font-size: 26px; font-weight: 800; color: #fff; display: block; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .cm-cb-lbl { font-size: 9px; opacity: .75; letter-spacing:.5px; }
+
+    /* ── Benefits strip ── */
+    .benefits-strip { background: #fff; border-top: 1px solid #e9ecef; padding: 20px 0; }
+    .benefit-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #666; }
+
+    /* ── Features section ── */
+    .features-section { padding: 70px 0; }
+    .feature-card {
+      border-radius: 16px !important;
+      border: none !important;
+      transition: transform .25s, box-shadow .25s;
+      height: 100%;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.12) !important; }
+    .feature-icon-wrap {
+      width: 52px; height: 52px;
+      background: var(--brand-light); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: var(--brand);
+      margin-bottom: 16px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       OLD FORM MODAL
+    ═══════════════════════════════════════════════ */
+    .old-field-row {
+      background: #f8f9fa; border-left: 3px solid #dee2e6;
+      border-radius: 4px; padding: 9px 13px;
+      font-size: 13px; color: #666; margin-bottom: 6px;
+    }
+    .old-field-row.sensitive { border-left-color: #dc3545; }
+    .pain-tag { font-size: 10px; font-weight: 600; background: #f8d7da; color: #842029; padding: 2px 7px; border-radius: 50px; margin-left: 6px; }
+
+    /* ═══════════════════════════════════════════════
+       CHAT SCREEN
+    ═══════════════════════════════════════════════ */
+    #chat-experience.active { background: #f0f2f5; }
+
+    /* ── Profile panel ── */
+    .profile-card { border-radius: 20px !important; border: none !important; position: sticky; top: 76px; overflow: hidden; }
+
+    /* Header area */
+    .panel-header {
+      background: #f8f9fa !important;
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid #ebebeb;
+    }
+    .panel-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .panel-title-text { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #bbb; }
+    .panel-pct-badge {
+      background: var(--brand-light);
+      border: 1px solid var(--brand-mid);
+      color: var(--brand);
+      font-size: 12px; font-weight: 700;
+      padding: 2px 10px; border-radius: 50px;
+    }
+    .panel-progress-bar-bg { height: 5px; background: #f0f0f0; border-radius: 50px; overflow: hidden; }
+    .panel-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand), #ff9a4d); border-radius: 50px; transition: width .5s ease; width: 0%; }
+    .panel-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: #ccc; margin-top: 6px; }
+
+    /* Field rows */
+    .profile-fields { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+
+    .profile-field-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 10px; border-radius: 12px;
+      transition: background .25s, transform .2s;
+      cursor: default;
+    }
+    .profile-field-row:hover { background: #f8f9fa; }
+    .profile-field-row.done { background: var(--brand-light); }
+    .profile-field-row.done:hover { background: #ffe8d6; }
+
+    /* Icon bubble */
+    .pf-icon-wrap {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      background: #f0f2f5;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .25s;
+    }
+    .pf-icon { font-size: 18px; color: #bbb; transition: color .25s; }
+    .profile-field-row.done .pf-icon-wrap { background: rgba(255,98,0,.15); }
+    .profile-field-row.done .pf-icon { color: var(--brand); }
+
+    /* Text */
+    .pf-text { flex: 1; min-width: 0; }
+    .pf-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #bbb; line-height: 1.2; margin-bottom: 1px; }
+    .profile-field-row.done .pf-label { color: var(--brand-dark); opacity: .75; }
+    .pf-value { font-size: 13px; font-weight: 400; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; line-height: 1.3; }
+    .pf-value.empty { color: #d0d0d0; font-style: italic; font-size: 12px; }
+    .profile-field-row.done .pf-value { font-weight: 500; }
+
+    /* Check badge */
+    .pf-check-wrap {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: var(--brand); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(.5);
+      transition: opacity .25s, transform .25s;
+    }
+    .pf-check-wrap .material-icons-round { font-size: 14px; color: #fff; }
+    .profile-field-row.done .pf-check-wrap { opacity: 1; transform: scale(1); }
+
+    /* Security note */
+    .panel-security {
+      margin: 0 12px 10px;
+      padding: 11px 14px;
+      background: linear-gradient(135deg, #eef9f3, #e8f4ff);
+      border: 1px solid #c3e6cb;
+      border-radius: 12px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .panel-security .material-icons-round { font-size: 16px; color: #198754; flex-shrink: 0; margin-top: 1px; }
+    .panel-security-text { font-size: 11.5px; color: #4a6741; line-height: 1.5; font-weight: 400; }
+
+    /* Demo controls */
+    .demo-sec {
+      margin: 0 12px 14px;
+      padding: 12px 14px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+    .demo-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #aaa; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .demo-lbl::before { content: ''; display: block; width: 16px; height: 2px; background: #ddd; border-radius: 2px; }
+    .demo-btn {
+      width: 100%; background: #fff; border: 1px solid #e9ecef; border-radius: 10px;
+      padding: 9px 12px; font-size: 12px; font-weight: 500; color: #666; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+      font-family: 'Roboto', sans-serif; text-align: left;
+      transition: all .2s; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    }
+    .demo-btn:last-child { margin-bottom: 0; }
+    .demo-btn .material-icons-round { font-size: 16px; color: #aaa; transition: color .2s; }
+    .demo-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); box-shadow: 0 2px 8px rgba(255,98,0,.12); }
+    .demo-btn:hover .material-icons-round { color: var(--brand); }
+
+    /* Chat card */
+    .chat-card { border-radius: 18px !important; border: none !important; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-topbar {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      padding: 13px 18px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    .chat-av {
+      width: 40px; height: 40px;
+      background: var(--brand); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 15px; font-weight: 700; flex-shrink: 0;
+    }
+    .chat-av.sm { width: 30px; height: 30px; font-size: 12px; }
+    .chat-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .chat-sub  { font-size: 12px; color: #888; display: flex; align-items: center; gap: 5px; }
+    .online-dot { width: 8px; height: 8px; background: #198754; border-radius: 50%; animation: pulse-green 2s infinite; }
+    .step-pill { background: var(--brand-light); color: var(--brand); font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 50px; white-space: nowrap; border: 1px solid var(--brand-mid); }
+
+    .messages-area {
+      flex: 1; overflow-y: auto;
+      padding: 18px; display: flex; flex-direction: column; gap: 12px;
+      scroll-behavior: smooth;
+      min-height: 280px; max-height: calc(100vh - 340px);
+    }
+    @media (max-width: 768px) { .messages-area { max-height: 42vh; } }
+    .messages-area::-webkit-scrollbar { width: 4px; }
+    .messages-area::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+    .msg-row { display: flex; gap: 8px; animation: fadeUp .3s ease; }
+    .msg-row.user { flex-direction: row-reverse; }
+    .msg-bubble { max-width: 72%; padding: 11px 16px; font-size: 14px; line-height: 1.55; border-radius: 18px; }
+    .nova-bubble { background: var(--brand-light); color: var(--navy); border-bottom-left-radius: 4px; }
+    .user-bubble { background: var(--navy); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 11px; color: #ccc; align-self: flex-end; flex-shrink: 0; }
+
+    .typing-row { display: flex; gap: 8px; align-items: flex-end; }
+    .typing-dots { background: var(--brand-light); padding: 13px 16px; border-radius: 18px; border-bottom-left-radius: 4px; display: flex; gap: 4px; align-items: center; }
+    .typing-dots span { width: 6px; height: 6px; background: var(--brand); border-radius: 50%; animation: typing-b .9s ease infinite; opacity: .5; }
+    .typing-dots span:nth-child(2){animation-delay:.16s} .typing-dots span:nth-child(3){animation-delay:.32s}
+
+    .chips-row { padding: 8px 18px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+    .s-chip {
+      display: inline-flex; align-items: center;
+      border: 1px solid #dee2e6; border-radius: 50px;
+      padding: 5px 14px; font-size: 13px; font-weight: 500;
+      color: #555; background: #fff; cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .s-chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+    .chat-input-wrap { padding: 14px 18px; border-top: 1px solid #f0f0f0; background: #fff; flex-shrink: 0; }
+    .chat-input-row { display: flex; align-items: flex-end; gap: 10px; }
+    #user-input {
+      flex: 1; border-radius: 12px; border: 1.5px solid #dee2e6;
+      padding: 12px 16px; font-size: 15px; font-family: 'Roboto', sans-serif;
+      resize: none; min-height: 50px; max-height: 120px; line-height: 1.5;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #user-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(255,98,0,.12); outline: none; }
+    #user-input:disabled { opacity: .45; cursor: not-allowed; }
+    #user-input::placeholder { color: #aaa; }
+    #send-btn {
+      width: 50px; height: 50px; flex-shrink: 0;
+      background: var(--brand); border: none; border-radius: 14px;
+      color: #fff; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 15px rgba(255,98,0,.35);
+    }
+    #send-btn:hover:not(:disabled) { background: var(--brand-dark); transform: scale(1.05); box-shadow: 0 6px 20px rgba(255,98,0,.45); }
+    #send-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; }
+    .input-hint { display: flex; justify-content: space-between; margin-top: 7px; font-size: 11px; color: #bbb; }
+
+    /* Demo controls */
+    /* demo styles moved to profile panel block above */
+
+    /* Mobile progress strip */
+    .mobile-progress { border-radius: 12px !important; border: none !important; }
+
+    /* ═══════════════════════════════════════════════
+       RESULT SCREEN
+    ═══════════════════════════════════════════════ */
+    #result-screen.active { background: #f0f2f5; }
+    .result-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 16px; }
+    .result-card-wrap { border-radius: 24px !important; border: none !important; max-width: 500px; width: 100%; }
+    .result-icon-wrap { width: 64px; height: 64px; background: var(--brand-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
+    .result-cv {
+      width: 100%; max-width: 320px; height: 180px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 55%, #6B2400 100%);
+      border-radius: 18px; margin: 0 auto 22px; padding: 24px; color: #fff;
+      position: relative; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,.22);
+    }
+    .result-cv::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .rcv-brand { font-size: 16px; font-weight: 800; letter-spacing: 1px; opacity: .9; }
+    .rcv-num   { font-size: 13px; letter-spacing: 3px; margin: 18px 0 12px; opacity: .55; }
+    .rcv-foot  { display: flex; justify-content: space-between; align-items: flex-end; }
+    .rcv-lbl   { font-size: 8px; opacity: .5; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+    .rcv-name  { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+    .rcv-exp   { font-size: 11px; opacity: .55; }
+    .rcv-cb    { position: absolute; top: 22px; right: 22px; text-align: right; }
+    .rcv-cb-pct { font-size: 22px; font-weight: 800; color: var(--brand-mid); display: block; line-height: 1; }
+    .rcv-cb-lbl { font-size: 9px; opacity: .65; }
+
+    /* Confetti */
+    .confetti-piece { position: fixed; pointer-events: none; z-index: 9999; border-radius: 2px; animation: confetti-fall linear forwards; }
+
+    /* ═══════════════════════════════════════════════
+       KEYFRAMES
+    ═══════════════════════════════════════════════ */
+    @keyframes fadeUp    { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse-green{ 0%,100%{box-shadow:0 0 0 0 rgba(25,135,84,.4)} 50%{box-shadow:0 0 0 6px rgba(25,135,84,0)} }
+    @keyframes typing-b  { 0%,80%,100%{transform:translateY(0);opacity:.5} 40%{transform:translateY(-4px);opacity:1} }
+    @keyframes confetti-fall{ 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════╗
+     ║           LANDING SCREEN            ║
+     ╚══════════════════════════════════════╝ -->
+<div id="landing" class="screen active">
+
+  <!-- ── Sticky Navbar ── -->
+  <nav class="navbar navbar-expand-lg mdb-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="#">discover<span>.</span></a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button"
+        data-mdb-toggle="collapse" data-mdb-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="material-icons-round text-muted">menu</span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="#">Cards</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Rewards</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Help</a></li>
+          <li class="nav-item ms-lg-3 my-2 my-lg-0">
+            <button class="btn btn-primary btn-sm rounded-pill px-4 shadow-2"
+              data-mdb-ripple-init onclick="startChat()">
+              <span class="material-icons-round me-2">chat_bubble</span>Get Pre-Approved
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Dark-gradient Hero (MDB homepage style) ── -->
+  <section class="hero-gradient">
+    <div class="container">
+      <div class="row align-items-center g-5">
+
+        <!-- Left copy -->
+        <div class="col-lg-6" data-aos="fade-right">
+          <div class="hero-eyebrow">
+            <span class="material-icons-round">auto_awesome</span>
+            AI-Powered &nbsp;·&nbsp; No Credit Impact
+          </div>
+
+          <h1 class="hero-title">
+            Pre-approval<br/>
+            shouldn't feel<br/>
+            like a <span class="highlight">form.</span>
+          </h1>
+
+          <p class="hero-body-text">
+            Meet Nova — your personal Discover guide.<br class="d-none d-xl-block"/>
+            One quick conversation. Zero fine-print walls.<br class="d-none d-xl-block"/>
+            Find out if you're pre-approved in under 2 minutes.
+          </p>
+
+          <div class="d-flex flex-wrap gap-3">
+            <button class="btn btn-primary btn-lg rounded-pill px-5 shadow-4" data-mdb-ripple-init onclick="startChat()">
+              <span class="material-icons-round me-2">chat_bubble</span>Chat with Nova
+            </button>
+            <button class="btn btn-outline-light btn-lg rounded-pill px-4" data-mdb-ripple-init
+              onclick="document.getElementById('old-modal').style.display='flex'">
+              <span class="material-icons-round me-2">visibility</span>See what we replaced
+            </button>
+          </div>
+
+          <div class="hero-chips">
+            <span class="hero-chip"><span class="material-icons-round" style="color:#ffc107">bolt</span>Under 2 minutes</span>
+            <span class="hero-chip"><span class="material-icons-round" style="color:#20c997">shield</span>Soft inquiry only</span>
+            <span class="hero-chip"><span class="material-icons-round" style="color:var(--brand-mid)">percent</span>5% cash back</span>
+          </div>
+        </div>
+
+        <!-- Right: Chat preview + card -->
+        <div class="col-lg-6 d-none d-lg-flex flex-column align-items-center gap-4">
+
+          <div class="card preview-card" style="width:330px">
+            <div class="preview-topbar">
+              <div class="preview-av">N</div>
+              <div class="flex-grow-1">
+                <div class="preview-name">Nova</div>
+                <div class="preview-status">
+                  <span style="width:7px;height:7px;background:#198754;border-radius:50%;display:inline-block"></span>
+                  Discover AI
+                </div>
+              </div>
+              <span class="material-icons-round text-muted">more_vert</span>
+            </div>
+            <div class="preview-msgs">
+              <div class="pb nova">Hi! 👋 I'm Nova. I'll help you check pre-approval — no credit score impact at all.</div>
+              <div class="pb user">Let's go!</div>
+              <div class="pb nova">Great! What's your first and last name?</div>
+              <div class="pb user">Alex Johnson</div>
+            </div>
+          </div>
+
+          <div class="card-mockup">
+            <div class="cm-inner">
+              <div class="cm-top">
+                <span class="cm-label">credit</span>
+                <div class="cm-cb">
+                  <span class="cm-cb-pct">5%</span>
+                  <span class="cm-cb-lbl">CASH BACK</span>
+                </div>
+              </div>
+              <div class="cm-chip-row">
+                <div class="cm-chip">
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                  <span></span><span></span><span></span>
+                </div>
+                <em class="cm-nfc">))))</em>
+              </div>
+              <div class="cm-number">1234 &nbsp;5678 &nbsp;9123 &nbsp;4567</div>
+              <div class="cm-bottom">
+                <div>
+                  <div class="cm-valid-label">Valid Dates</div>
+                  <div class="cm-valid-date">02/00</div>
+                  <div class="cm-name">Your Name Here</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Benefits strip ── -->
+  <div class="benefits-strip">
+    <div class="container">
+      <div class="row justify-content-center g-3 g-md-5">
+        <div class="col-auto"><div class="benefit-item"><span class="material-icons-round text-primary">forum</span>Conversation, not a form</div></div>
+        <div class="col-auto"><div class="benefit-item"><span class="material-icons-round text-primary">lock</span>Bank-level encryption</div></div>
+        <div class="col-auto d-none d-md-flex"><div class="benefit-item"><span class="material-icons-round text-primary">speed</span>Result in 2 minutes</div></div>
+        <div class="col-auto d-none d-md-flex"><div class="benefit-item"><span class="material-icons-round text-primary">check_circle</span>No credit score impact</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Features section ── -->
+  <section class="features-section bg-white">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="badge bg-primary rounded-pill px-3 py-2 mb-3" style="font-size:12px;letter-spacing:.5px">Why Nova</span>
+        <h2 class="fw-bold mb-3" style="font-size:clamp(26px,4vw,38px);color:var(--navy)">Designed around how people actually feel</h2>
+        <p class="text-muted mx-auto" style="max-width:520px;font-size:16px;font-weight:300">Every question comes with context. Every sensitive field comes with reassurance.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-3">
+          <div class="card feature-card shadow-2 p-4">
+            <div class="feature-icon-wrap"><span class="material-icons-round">layers</span></div>
+            <h6 class="fw-bold mb-2">Progressive disclosure</h6>
+            <p class="text-muted mb-0" style="font-size:13px;line-height:1.6">One or two questions at a time — not 15 fields on a single screen.</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card feature-card shadow-2 p-4">
+            <div class="feature-icon-wrap"><span class="material-icons-round">shield</span></div>
+            <h6 class="fw-bold mb-2">Trust before sensitivity</h6>
+            <p class="text-muted mb-0" style="font-size:13px;line-height:1.6">SSN comes last — after 7 comfortable steps have built your confidence.</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card feature-card shadow-2 p-4">
+            <div class="feature-icon-wrap"><span class="material-icons-round">visibility</span></div>
+            <h6 class="fw-bold mb-2">Full transparency</h6>
+            <p class="text-muted mb-0" style="font-size:13px;line-height:1.6">Watch your profile build in real-time — you always see exactly what we have.</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card feature-card shadow-2 p-4">
+            <div class="feature-icon-wrap"><span class="material-icons-round">smartphone</span></div>
+            <h6 class="fw-bold mb-2">Mobile-native</h6>
+            <p class="text-muted mb-0" style="font-size:13px;line-height:1.6">Designed for thumbs first. Works beautifully on any screen size.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer strip -->
+  <div class="py-4 text-center border-top bg-white">
+    <p class="text-muted mb-0" style="font-size:12px">
+      © 2025 Discover Financial Services · This is a UX design prototype by Nova AI
+      · <a href="#" class="text-muted">Privacy</a> · <a href="#" class="text-muted">Terms</a>
+    </p>
+  </div>
+
+</div><!-- /landing -->
+
+
+<!-- Old form modal -->
+<div id="old-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:20px"
+  onclick="if(event.target===this)this.style.display='none'">
+  <div class="card p-4 p-md-5" style="max-width:480px;width:100%;max-height:80vh;overflow-y:auto;border-radius:20px;position:relative;border:none">
+    <button class="btn-close position-absolute top-0 end-0 m-3" onclick="document.getElementById('old-modal').style.display='none'"></button>
+    <div class="text-danger mb-3"><span class="material-icons-round">sentiment_dissatisfied</span></div>
+    <h5 class="fw-bold mb-1">The old Discover form</h5>
+    <p class="text-muted small mb-4">15 fields, 2 consent checkboxes, 800-word legal block — presented all at once, with no context.</p>
+    <div class="old-field-row">👤 First Name</div>
+    <div class="old-field-row">👤 Last Name</div>
+    <div class="old-field-row">🏠 Street, City, State, ZIP</div>
+    <div class="old-field-row">🎂 Date of Birth <span class="pain-tag">No context</span></div>
+    <div class="old-field-row sensitive">🔐 Full Social Security Number <span class="pain-tag">⚠ Anxiety spike</span></div>
+    <div class="old-field-row">🎓 Student status</div>
+    <div class="old-field-row">🏘️ Housing status &amp; monthly payment</div>
+    <div class="old-field-row">💰 Total annual income</div>
+    <div class="old-field-row">🏦 Bank accounts owned</div>
+    <div class="old-field-row">📧 Email</div>
+    <div class="old-field-row sensitive">📜 Legal block — 800+ words <span class="pain-tag">⚠ Nobody reads</span></div>
+    <div class="old-field-row sensitive">☑️ Two checkbox consents <span class="pain-tag">⚠ Trust drop</span></div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button class="btn btn-outline-secondary btn-sm rounded-pill" data-mdb-ripple-init onclick="document.getElementById('old-modal').style.display='none'">Close</button>
+      <button class="btn btn-primary btn-sm rounded-pill shadow-2" data-mdb-ripple-init onclick="document.getElementById('old-modal').style.display='none';startChat()">
+        <span class="material-icons-round me-1">chat_bubble</span>Try Nova instead
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║          CHAT EXPERIENCE            ║
+     ╚══════════════════════════════════════╝ -->
+<div id="chat-experience" class="screen">
+
+  <!-- Navbar -->
+  <nav class="navbar mdb-navbar">
+    <div class="container">
+      <button class="btn btn-link text-muted p-0 me-3" data-mdb-ripple-init onclick="goToLanding()">
+        <span class="material-icons-round">arrow_back</span>
+      </button>
+      <a class="navbar-brand" href="#">discover<span>.</span></a>
+      <div class="ms-auto">
+        <button class="btn btn-link text-muted p-1" data-mdb-ripple-init title="Help">
+          <span class="material-icons-round">help</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4" style="flex:1">
+    <div class="row g-4 align-items-start">
+
+      <!-- ── Profile panel (desktop only) ── -->
+      <div class="col-xl-4 col-lg-4 d-none d-lg-block">
+        <div class="card profile-card shadow-3">
+
+          <!-- Dark gradient header with progress -->
+          <div class="panel-header">
+            <div class="panel-header-top">
+              <span class="panel-title-text">Your Profile</span>
+              <span class="panel-pct-badge" id="progress-pct">0%</span>
+            </div>
+            <div class="panel-progress-bar-bg">
+              <div class="panel-progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="panel-progress-label">
+              <span id="panel-step-label">Getting started</span>
+              <span id="panel-step">Step 1 of 8</span>
+            </div>
+          </div>
+
+          <!-- Field rows -->
+          <div class="profile-fields">
+
+            <div class="profile-field-row" id="pf-name">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">person</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Name</div>
+                <div class="pf-value empty" id="pv-name">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-address">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">home</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Address</div>
+                <div class="pf-value empty" id="pv-address">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-dob">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">cake</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Date of Birth</div>
+                <div class="pf-value empty" id="pv-dob">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-income">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">payments</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Annual Income</div>
+                <div class="pf-value empty" id="pv-income">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-housing">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">apartment</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Housing</div>
+                <div class="pf-value empty" id="pv-housing">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-bank">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">account_balance</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Bank Accounts</div>
+                <div class="pf-value empty" id="pv-bank">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-email">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">mail</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Email</div>
+                <div class="pf-value empty" id="pv-email">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+            <div class="profile-field-row" id="pf-id">
+              <div class="pf-icon-wrap"><span class="material-icons-round pf-icon">fingerprint</span></div>
+              <div class="pf-text">
+                <div class="pf-label">Identity</div>
+                <div class="pf-value empty" id="pv-id">Not provided yet</div>
+              </div>
+              <div class="pf-check-wrap"><span class="material-icons-round">check</span></div>
+            </div>
+
+          </div><!-- /profile-fields -->
+
+          <!-- Security badge -->
+          <div class="panel-security">
+            <span class="material-icons-round">verified_user</span>
+            <div class="panel-security-text">Bank-level encryption. Soft inquiry only — no credit score impact.</div>
+          </div>
+
+          <!-- Demo controls -->
+          <div class="demo-sec">
+            <div class="demo-lbl">Demo Controls</div>
+            <button class="demo-btn" onclick="simulateError()">
+              <span class="material-icons-round">wifi_off</span>Simulate connection error
+            </button>
+            <button class="demo-btn" onclick="resetChat()">
+              <span class="material-icons-round">restart_alt</span>Restart conversation
+            </button>
+          </div>
+
+        </div><!-- /profile-card -->
+      </div>
+
+      <!-- ── Chat panel ── -->
+      <div class="col-lg-8 col-xl-8">
+        <div class="card chat-card shadow-2">
+
+          <!-- Top bar -->
+          <div class="chat-topbar">
+            <div class="chat-av">N</div>
+            <div class="flex-grow-1">
+              <div class="chat-name">Nova</div>
+              <div class="chat-sub"><span class="online-dot"></span> Discover AI · Soft inquiry only</div>
+            </div>
+            <div class="step-pill" id="chat-step">Step 1 of 8</div>
+          </div>
+
+          <!-- Messages -->
+          <div class="messages-area" id="messages"></div>
+
+          <!-- Suggestion chips -->
+          <div class="chips-row" id="chips-row" style="display:none"></div>
+
+          <!-- Input -->
+          <div class="chat-input-wrap">
+            <div class="chat-input-row">
+              <textarea id="user-input" placeholder="Type your response…" rows="1"
+                onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+              <button id="send-btn" onclick="sendUserMessage()" aria-label="Send">
+                <span class="material-icons-round">send</span>
+              </button>
+            </div>
+            <div class="input-hint">
+              <span><span class="material-icons-round me-1">lock</span>Secure &amp; encrypted</span>
+              <span class="d-none d-sm-inline">Enter to send · Shift+Enter for new line</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Mobile: compact progress card -->
+        <div class="d-lg-none mt-3">
+          <div class="card mobile-progress shadow-1 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <small class="text-muted fw-bold text-uppercase" style="font-size:10px;letter-spacing:.5px">Profile Progress</small>
+              <small class="fw-bold text-primary" id="progress-pct-m">0%</small>
+            </div>
+            <div class="progress" style="height:6px;border-radius:10px;background:#f0f0f0">
+              <div class="progress-bar" id="progress-fill-m" style="width:0%;transition:width .5s ease;border-radius:10px"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /chat-experience -->
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║            RESULT SCREEN            ║
+     ╚══════════════════════════════════════╝ -->
+<div id="result-screen" class="screen">
+
+  <nav class="navbar mdb-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="#">discover<span>.</span></a>
+    </div>
+  </nav>
+
+  <div class="result-wrap">
+    <div class="card result-card-wrap shadow-4 text-center p-4 p-md-5">
+
+      <div class="result-icon-wrap">🎉</div>
+      <span class="badge bg-primary rounded-pill mb-2 px-3 py-2" style="font-size:12px;letter-spacing:.4px">Pre-Approved</span>
+      <h2 class="fw-bold mb-2" id="result-title" style="font-size:clamp(24px,4vw,30px);color:var(--navy)">Great news!</h2>
+      <p class="text-muted mb-4">You may be pre-approved for the <strong>Discover it® Cash Back</strong> card.</p>
+
+      <div class="result-cv">
+        <div class="rcv-brand">DISCOVER IT®</div>
+        <div class="rcv-num">•••• &nbsp;•••• &nbsp;•••• &nbsp;1234</div>
+        <div class="rcv-foot">
+          <div>
+            <div class="rcv-lbl">Cardholder</div>
+            <div class="rcv-name" id="rcv-name">YOUR NAME</div>
+          </div>
+          <div class="rcv-exp">12/29</div>
+        </div>
+        <div class="rcv-cb">
+          <span class="rcv-cb-pct">5%</span>
+          <span class="rcv-cb-lbl">CASH BACK</span>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-4">
+        <div class="col-4">
+          <div class="rounded-3 p-3" style="background:#f8f9fa">
+            <div class="text-muted fw-bold text-uppercase mb-1" style="font-size:10px;letter-spacing:.4px">APR</div>
+            <div class="fw-bold" style="font-size:13px;color:var(--navy)">18.24–27.24%</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="rounded-3 p-3" style="background:#f8f9fa">
+            <div class="text-muted fw-bold text-uppercase mb-1" style="font-size:10px;letter-spacing:.4px">Cash Back</div>
+            <div class="fw-bold" style="font-size:13px;color:var(--navy)">5% rotating</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="rounded-3 p-3" style="background:#f8f9fa">
+            <div class="text-muted fw-bold text-uppercase mb-1" style="font-size:10px;letter-spacing:.4px">Bonus</div>
+            <div class="fw-bold" style="font-size:13px;color:var(--navy)">Cash Match™</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg rounded-pill w-100 shadow-3 mb-3 py-3" data-mdb-ripple-init>
+        Complete My Application <span class="material-icons-round ms-2">arrow_forward</span>
+      </button>
+      <button class="btn btn-link text-muted" onclick="resetToLanding()">Start over</button>
+
+      <p class="text-muted mt-3" style="font-size:11px;line-height:1.6">
+        Pre-approval does not guarantee final approval. A hard inquiry will occur upon full application. Terms vary by creditworthiness.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /result-screen -->
+
+
+<!-- MDB JS 7 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.umd.min.js"></script>
+
+<script>
+// ─────────────────────────────────────────
+//  NOVA — SELF-CONTAINED SCRIPTED ENGINE
+//  No API required. Works 100% offline.
+// ─────────────────────────────────────────
+let profile = {}, step = 0, isWaiting = false, clarifyCount = 0;
+
+const FIELD_GROUPS = [
+  {id:'pf-name',    keys:['firstName','lastName'],  pvId:'pv-name',    fmt:p=>`${p.firstName||''} ${p.lastName||''}`.trim()},
+  {id:'pf-address', keys:['city','state'],           pvId:'pv-address', fmt:p=>p.city?`${p.city}, ${p.state}`:''},
+  {id:'pf-dob',     keys:['dateOfBirth'],            pvId:'pv-dob',     fmt:p=>p.dateOfBirth},
+  {id:'pf-income',  keys:['annualIncome'],           pvId:'pv-income',  fmt:p=>p.annualIncome?`$${Number(p.annualIncome).toLocaleString()}/yr`:''},
+  {id:'pf-housing', keys:['housingStatus'],          pvId:'pv-housing', fmt:p=>p.housingStatus?`${p.housingStatus} · $${p.monthlyHousingPayment||0}/mo`:''},
+  {id:'pf-bank',    keys:['bankAccounts'],           pvId:'pv-bank',    fmt:p=>p.bankAccounts},
+  {id:'pf-email',   keys:['email'],                  pvId:'pv-email',   fmt:p=>p.email},
+  {id:'pf-id',      keys:['last4SSN'],               pvId:'pv-id',      fmt:p=>p.last4SSN?`••••••••${p.last4SSN}`:''},
+];
+
+const STEP_CHIPS = [
+  [],
+  [],
+  [],
+  ['$40,000','$60,000','$80,000+'],
+  ['I own · $0','I rent · $1,200','I rent · $2,000'],
+  ['Both','Checking only','Savings only','Neither'],
+  [],
+  ['Last 4 only — I understand'],
+];
+
+const STEPS = [
+  {ask:()=>`Hi there! 👋 I'm Nova, your Discover card guide. I'll help you check if you're pre-approved in just a couple of minutes — and it won't affect your credit score at all.\n\nLet's start simple: what's your first and last name?`,
+   parse:i=>{const p=i.trim().split(/\s+/);return p.length>=2?{firstName:cap(p[0]),lastName:cap(p.slice(1).join(' '))}:null;},
+   clarify:()=>`No worries — could you give me your full name, first and last? For example: "Jane Smith".`,field:'name'},
+
+  {ask:p=>`Nice to meet you, ${p.firstName}! 😊 What's your current home address? I'll need your street address, city, state, and ZIP code.`,
+   parse:i=>{const z=(i.match(/\b(\d{5})\b/)||[])[1],sm=i.match(/\b([A-Z]{2})\b/)||i.match(/,\s*([A-Za-z]{2,20})\s*\d{5}/),pts=i.split(',').map(s=>s.trim()),city=pts.length>=2?cap(pts[pts.length-2].replace(/^\d+\s+\w+\s+\w+\s*/,''))||cap(pts[0]):cap(pts[0]);return i.length>5?{streetAddress:cap(pts[0]),city:city||'Your City',state:sm?sm[1].toUpperCase().slice(0,2):'NY',zip:z||'10001'}:null;},
+   clarify:()=>`Could you be a bit more specific? Something like "123 Main St, Austin, TX 78701" works perfectly.`,field:'address'},
+
+  {ask:()=>`Got it! And what's your date of birth? (You'll need to be 18 or older to apply.)`,
+   parse:i=>{const m=i.match(/(\d{1,2})[\/\-\s](\d{1,2})[\/\-\s](\d{2,4})/);if(m){const y=m[3].length===2?'19'+m[3]:m[3];if(new Date().getFullYear()-parseInt(y)<18)return{__under18:true};return{dateOfBirth:`${m[1].padStart(2,'0')}/${m[2].padStart(2,'0')}/${y}`};}return null;},
+   clarify:()=>`Could you share that as MM/DD/YYYY? For example, 04/15/1990.`,field:'dob'},
+
+  {ask:()=>`Perfect. What's your approximate total annual income? This helps me match you to the right card. A rough estimate is totally fine.`,
+   parse:i=>{const l=i.toLowerCase();let a=null;const k=l.match(/([\d,\.]+)\s*k/),m2=l.match(/([\d,\.]+)\s*m/),r=i.match(/([\d,]+)/);if(k)a=Math.round(parseFloat(k[1])*1e3);else if(m2)a=Math.round(parseFloat(m2[1])*1e6);else if(r)a=parseInt(r[1].replace(/,/g,''));return a!==null&&a>=0?{annualIncome:String(a)}:null;},
+   clarify:()=>`Just a ballpark works! Something like "$45,000" or "about 60k" is perfect.`,field:'income'},
+
+  {ask:()=>`Got it. Do you own your home, rent, or have another arrangement? And roughly what's your monthly housing payment? (0 if none.)`,
+   parse:i=>{const l=i.toLowerCase();let s=null;if(/own|mortgage|bought|purchase/.test(l))s='Own';else if(/rent|tenant|lease/.test(l))s='Rent';else if(/live with|parents|family|free|none|no payment/.test(l))s='Other';const n=i.match(/([\d,]+)/);return s?{housingStatus:s,monthlyHousingPayment:String(n?parseInt(n[1].replace(/,/g,'')):0)}:null;},
+   clarify:()=>`Just let me know if you own, rent, or have another arrangement, plus your monthly payment (or 0 if none).`,field:'housing'},
+
+  {ask:()=>`Thanks! Do you have a checking account, savings account, both, or neither?`,
+   parse:i=>{const l=i.toLowerCase();if(/both|checking.*saving|saving.*checking/.test(l))return{bankAccounts:'Both'};if(/checking|debit/.test(l))return{bankAccounts:'Checking'};if(/saving|ira|money market/.test(l))return{bankAccounts:'Savings'};if(/neither|none|no account|don.t have/.test(l))return{bankAccounts:'None'};return null;},
+   clarify:()=>`Checking account, savings account, both, or neither — any of those works!`,field:'bank'},
+
+  {ask:p=>`Almost there, ${p.firstName}! What email address should I send your pre-approval result to?`,
+   parse:i=>{const m=i.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);return m?{email:m[0].toLowerCase()}:null;},
+   clarify:()=>`I just need a valid email — something like yourname@example.com.`,field:'email'},
+
+  {ask:p=>`One last thing! To verify your identity and run a soft check (absolutely no credit score impact), could you share the last 4 digits of your Social Security Number?\n\n🔒 Encrypted — used only for this identity check.`,
+   parse:i=>{const l=i.toLowerCase();if(/no|won.t|refuse|not comfortable|don.t want|skip|privacy/.test(l))return{__ssnRefused:true};const d=i.replace(/\D/g,'');if(d.length===4)return{last4SSN:d};if(d.length>4)return{last4SSN:d.slice(-4)};return null;},
+   clarify:p=>`Totally understandable! Just to clarify: it's only the last 4 digits (not your full SSN), and it's a soft pull — zero credit score impact. Ready to share them, ${p.firstName}?`,field:'id'},
+];
+
+// ── helpers ──
+function cap(s){return s?s.replace(/\b\w/g,c=>c.toUpperCase()):s;}
+function time(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function addMessage(role,text){
+  if(!text.trim())return;
+  const box=document.getElementById('messages');
+  const row=document.createElement('div');
+  row.className=`msg-row${role==='user'?' user':''}`;
+  const av=role==='nova'?`<div class="chat-av sm">N</div>`:'';
+  row.innerHTML=`${av}<div class="msg-bubble ${role==='user'?'user-bubble':'nova-bubble'}">${text.replace(/\n/g,'<br>')}</div><span class="msg-time">${time()}</span>`;
+  box.appendChild(row); box.scrollTop=box.scrollHeight;
+}
+
+function showTyping(){
+  hideTyping();
+  const box=document.getElementById('messages');
+  const r=document.createElement('div'); r.id='typ'; r.className='typing-row';
+  r.innerHTML=`<div class="chat-av sm">N</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  box.appendChild(r); box.scrollTop=box.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typ');if(t)t.remove();}
+
+function showErrorMsg(){
+  const box=document.getElementById('messages');
+  if(document.getElementById('err-row'))return;
+  const r=document.createElement('div'); r.id='err-row';
+  r.className='alert alert-danger d-flex align-items-center justify-content-between rounded-3 py-2 px-3 mb-0';
+  r.style.fontSize='13px';
+  r.innerHTML=`<span><span class="material-icons-round me-2">wifi_off</span>Connection issue — couldn't reach Nova.</span>
+    <button class="btn btn-sm btn-danger ms-2 rounded-pill py-1 px-3" onclick="clearErr()">Dismiss</button>`;
+  box.appendChild(r); box.scrollTop=box.scrollHeight;
+}
+function clearErr(){const e=document.getElementById('err-row');if(e)e.remove();}
+
+function setEnabled(v){
+  document.getElementById('user-input').disabled=!v;
+  document.getElementById('send-btn').disabled=!v;
+  if(v)setTimeout(()=>document.getElementById('user-input').focus(),60);
+}
+
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendUserMessage();}}
+
+function updateChips(s){
+  const row=document.getElementById('chips-row');
+  const chips=STEP_CHIPS[s]||[];
+  if(!chips.length){row.style.display='none';return;}
+  row.style.display='flex';
+  row.innerHTML=chips.map(c=>`<button class="s-chip" onclick="useChip(this)">${c}</button>`).join('');
+}
+function useChip(btn){document.getElementById('user-input').value=btn.textContent;sendUserMessage();}
+
+function updatePanel(data){
+  Object.assign(profile,data);
+  let filled=0;
+  FIELD_GROUPS.forEach(g=>{
+    const done=g.keys.every(k=>profile[k]);
+    const row=document.getElementById(g.id);
+    const pv=document.getElementById(g.pvId);
+    if(done){
+      row.classList.add('done');
+      pv.classList.remove('empty');
+      pv.textContent=g.fmt(profile)||'✓';
+      filled++;
+    }
+  });
+  const pct=Math.round(filled/FIELD_GROUPS.length*100);
+  const stepTxt=`Step ${Math.min(filled+1,8)} of 8`;
+  [['progress-fill','progress-pct'],['progress-fill-m','progress-pct-m']].forEach(([fi,pi])=>{
+    const fe=document.getElementById(fi),pe=document.getElementById(pi);
+    if(fe)fe.style.width=pct+'%';
+    if(pe)pe.textContent=pct+'%';
+  });
+  ['chat-step','panel-step'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent=stepTxt;
+  });
+  // Update panel-step left label based on progress
+  const pl=document.getElementById('panel-step-label');
+  if(pl){const labels=['Getting started','Just starting…','Making progress','Halfway there!','Almost halfway','Looking good!','Nearly done!','Last step!','Complete!'];pl.textContent=labels[Math.min(filled,8)];}
+}
+
+function novaRespond(text,delay=900){
+  setEnabled(false);
+  document.getElementById('chips-row').style.display='none';
+  showTyping();
+  setTimeout(()=>{hideTyping();addMessage('nova',text);setEnabled(true);updateChips(step);},delay);
+}
+
+function processInput(input){
+  if(isWaiting||step>=STEPS.length)return;
+  isWaiting=true; setEnabled(false);
+  document.getElementById('chips-row').style.display='none';
+  const cs=STEPS[step],parsed=cs.parse(input);
+
+  if(parsed&&parsed.__under18){isWaiting=false;novaRespond(`Thanks for sharing that! Unfortunately, you'll need to be 18 or older to apply for a Discover card. We'd love to help when the time comes! 😊`,900);return;}
+
+  if(parsed&&parsed.__ssnRefused){
+    if(clarifyCount===0){clarifyCount++;isWaiting=false;novaRespond(`Totally understandable — security matters! Just to be clear: it's only the last 4 digits (not your full SSN), and this is a soft pull so it won't touch your credit score.\n\nReady to share those last 4, ${profile.firstName}?`,1000);return;}
+    isWaiting=false;novaRespond(`No problem at all — I completely understand. Those 4 digits are required to complete the check. Feel free to come back anytime! 🙂`,900);return;
+  }
+
+  if(parsed){
+    updatePanel(parsed);clarifyCount=0;step++;
+    if(step>=STEPS.length){
+      isWaiting=false;setEnabled(false);showTyping();
+      setTimeout(()=>{
+        hideTyping();addMessage('nova',`That's everything I need, ${profile.firstName}! Checking your eligibility now… 🔍`);
+        showTyping();
+        setTimeout(()=>{
+          hideTyping();addMessage('nova',`🎉 Great news — you appear to be pre-approved! Taking you to your offer now…`);
+          setTimeout(()=>triggerResult(),1400);
+        },2200);
+      },900);
+      return;
+    }
+    isWaiting=false;novaRespond(STEPS[step].ask(profile),850);return;
+  }
+
+  const l=input.toLowerCase();
+  const faqs=[
+    {t:/apr|interest rate/,r:`Discover it® Cash Back offers 0% intro APR for 15 months on purchases, then variable. Let's find your exact rate — `},
+    {t:/cash.?back|reward/,r:`Discover it® earns 5% back on rotating categories, 1% on everything else, plus Discover matches your first year's cash back! Now, `},
+    {t:/credit score|hard.?pull|soft.?pull/,r:`Pre-approval is a soft inquiry — zero impact on your credit score. Only a full application creates a hard pull. `},
+    {t:/how long|how much time/,r:`About 2 minutes total — you're making great progress already! `},
+    {t:/safe|secure|privacy|data/,r:`Your data is protected with 256-bit encryption and used only for this eligibility check. `},
+  ];
+  const faq=faqs.find(f=>f.t.test(l));
+  if(faq){isWaiting=false;novaRespond(faq.r+STEPS[step].ask(profile).split('\n')[0],1000);return;}
+
+  if(clarifyCount<2){
+    clarifyCount++;isWaiting=false;
+    novaRespond(typeof cs.clarify==='function'?cs.clarify(profile):cs.clarify,800);
+  } else {
+    const defs={name:{firstName:'Friend',lastName:''},address:{streetAddress:'—',city:'Your City',state:'NY',zip:'10001'},dob:{dateOfBirth:'01/01/1990'},income:{annualIncome:'50000'},housing:{housingStatus:'Other',monthlyHousingPayment:'0'},bank:{bankAccounts:'Checking'},email:{email:'user@example.com'},id:{last4SSN:'0000'}};
+    updatePanel(defs[cs.field]||{});clarifyCount=0;step++;isWaiting=false;
+    if(step<STEPS.length)novaRespond(STEPS[step].ask(profile),800);
+  }
+}
+
+function sendUserMessage(){
+  const inp=document.getElementById('user-input');const txt=inp.value.trim();
+  if(!txt||isWaiting)return;inp.value='';inp.style.height='auto';
+  addMessage('user',txt);setTimeout(()=>processInput(txt),100);
+}
+
+function triggerResult(){
+  const fn=profile.firstName||'',ln=profile.lastName||'';
+  document.getElementById('result-title').textContent=`Great news${fn?', '+fn:''}!`;
+  document.getElementById('rcv-name').textContent=`${fn} ${ln}`.trim().toUpperCase()||'YOUR NAME';
+  showScreen('result-screen');launchConfetti();
+}
+
+function launchConfetti(){
+  const cols=['#FF6200','#FFD5B8','#CC4E00','#FFA05A','#1a1a2e','#ffffff'];
+  for(let i=0;i<70;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');el.className='confetti-piece';
+      el.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:${cols[Math.floor(Math.random()*cols.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),4000);
+    },i*25);
+  }
+}
+
+function simulateError(){clearErr();showErrorMsg();}
+
+function startChat(){
+  showScreen('chat-experience');
+  profile={};step=0;clarifyCount=0;isWaiting=false;
+  document.getElementById('messages').innerHTML='';
+  document.getElementById('chips-row').style.display='none';
+  FIELD_GROUPS.forEach(g=>{
+    document.getElementById(g.id).classList.remove('done');
+    const pv=document.getElementById(g.pvId);pv.classList.add('empty');pv.textContent='—';
+  });
+  [['progress-fill','progress-pct'],['progress-fill-m','progress-pct-m']].forEach(([fi,pi])=>{
+    const fe=document.getElementById(fi),pe=document.getElementById(pi);
+    if(fe)fe.style.width='0%'; if(pe)pe.textContent='0%';
+  });
+  ['chat-step','panel-step'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Step 1 of 8';});
+  const psl=document.getElementById('panel-step-label');if(psl)psl.textContent='Getting started';
+  novaRespond(STEPS[0].ask(),700);
+}
+
+function resetChat(){startChat();}
+function goToLanding(){showScreen('landing');}
+function resetToLanding(){showScreen('landing');}
+</script>
+</body>
+</html>
